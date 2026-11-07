@@ -2,23 +2,77 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <description>Fault Path</description>
+        <name>Fault_Path</name>
+        <label>Fault Path</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>errorMessage</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <customErrors>
+        <description>Handover item is present</description>
+        <name>Handover_Item_is_exist</name>
+        <label>Handover Item is exist</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Complete Handover Items.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
     <customErrors>
         <description>Refuses to close an installation that was never given an install date.</description>
         <name>Install_Date_Missing</name>
         <label>Install Date Missing</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Handover_Items</targetReference>
+        </connector>
         <customErrorMessages>
             <errorMessage>Set the install date before closing this installation.</errorMessage>
             <isFieldError>false</isFieldError>
         </customErrorMessages>
     </customErrors>
     <decisions>
+        <description>Check for handover items</description>
+        <name>Check_Handover_Items</name>
+        <label>Check Handover Items</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Not Exist</defaultConnectorLabel>
+        <rules>
+            <name>Exist</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Handover_Items</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Handover_Item_is_exist</targetReference>
+            </connector>
+            <label>Exist</label>
+        </rules>
+    </decisions>
+    <decisions>
         <description>Was the installation ever given an install date?</description>
         <name>No_Install_Date</name>
         <label>No Install Date</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Handover_Items</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Install date set</defaultConnectorLabel>
         <rules>
             <name>Date_Missing</name>
@@ -53,6 +107,31 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Get Handover Items</description>
+        <name>Get_Handover_Items</name>
+        <label>Get Handover Items</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Handover_Items</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Fault_Path</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Is_Done__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Handover_Item__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -73,4 +152,11 @@
         <triggerType>RecordBeforeSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>errorMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
