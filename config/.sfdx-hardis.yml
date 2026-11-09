@@ -28,7 +28,7 @@ availableTargetBranchesLabels:
   - The shared integration org, where every contributor merges
   - The shared preprod org, where every contributor merges for hotfix changes
 
-# Branch naming for new User Stories  
+# Branch naming for new User Stories
 branchPrefixChoices:
   - value: features
     title: "Feature: a new capability or an improvement"
