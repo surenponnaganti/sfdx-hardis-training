@@ -23,8 +23,10 @@ orgAuthenticationMode: secretsOnly
 # promotion, never by a User Story. Lab 3.1 adds preprod here, for hotfixes.
 availableTargetBranches:
   - integration
+  - preprod
 availableTargetBranchesLabels:
-  - "The shared integration org, where every contributor merges"
+  - The shared integration org, where every contributor merges
+  - The shared preprod org, where every contributor merges for hotfix changes
 
 # Branch naming for new User Stories
 branchPrefixChoices:
@@ -34,14 +36,14 @@ branchPrefixChoices:
     title: "Fix: correct something that is broken"
   - value: retrofit
     title: "Retrofit: merge production back down into the pipeline after a hotfix (release manager)"
-newTaskNameRegex: '^US-\d{3}-[a-z0-9-]+$'
-newTaskNameRegexExample: "US-014-panels-required"
+newTaskNameRegex: ^US-\d{3}-[a-z0-9-]+$
+newTaskNameRegexExample: US-014-panels-required
 # The stories live in the backlog of this course, not in a ticketing tool. These
 # keys let the Pull Request comments link every US-nnn they meet to its page, and
 # write its title next to the link, read from the JSON the site publishes per story.
-genericTicketingProviderRegex: "(US-[0-9]{3})"
-genericTicketingProviderUrlBuilder: "https://sfdx-hardis-training.cloudity.com/BACKLOG/{REF}/"
-genericTicketingProviderDetailsUrlBuilder: "https://sfdx-hardis-training.cloudity.com/BACKLOG/{REF}.json"
+genericTicketingProviderRegex: (US-[0-9]{3})
+genericTicketingProviderUrlBuilder: https://sfdx-hardis-training.cloudity.com/BACKLOG/{REF}/
+genericTicketingProviderDetailsUrlBuilder: https://sfdx-hardis-training.cloudity.com/BACKLOG/{REF}.json
 # A step somebody has to do by hand around a deployment is declared as a deployment
 # action of type manual (Lab 2.4), not in a spreadsheet kept somewhere else. With
 # this, Save / Publish sends you to the DevOps Pipeline panel instead of asking
@@ -158,7 +160,6 @@ customCommands:
         tooltip: Puts your repository back to the start of Level 1
         command: node scripts/training.mjs reset --level 1
         helpUrl: https://sfdx-hardis-training.cloudity.com/en/level-1-contributor-basics/
-
   - id: training-level-2
     label: "Training: Level 2"
     description: Contributor advanced - the commands the Level 2 labs ask for
@@ -229,7 +230,6 @@ customCommands:
         tooltip: Puts your repository back to the start of Level 2
         command: node scripts/training.mjs reset --level 2
         helpUrl: https://sfdx-hardis-training.cloudity.com/en/level-2-contributor-advanced/
-
   - id: training-level-3
     label: "Training: Level 3"
     description: Release Manager - the commands the Level 3 labs ask for
@@ -307,3 +307,30 @@ customCommands:
         tooltip: Removes the Helios app and its data from an org, once you are done with the course
         command: node scripts/training.mjs teardown
         helpUrl: https://sfdx-hardis-training.cloudity.com/en/level-3-release-manager/
+codingAgentAutoFix: false
+flowDeleteInterviews: false
+flowDeleteMaxAttempts: 3
+flowDeleteRetryDelayMs: 10000
+devHubAlias: ""
+devHubInstanceUrl: https://login.salesforce.com
+devHubUsername: ""
+enableDeltaDeploymentBetweenMajorBranches: false
+enablePromotionBranches: true
+enableMajorBranchDeploymentCheck: false
+majorBranchDeploymentCheckValidityHours: 24
+detectManualCherryPicks: false
+enableDeploymentApexTestClasses: false
+enableDeprecatedDeploymentPlan: false
+installPackagesDuringCheckDeploy: false
+manualActionsFileUrl: ""
+notifTranslateDeploymentMessages: false
+sharedDevSandboxes: false
+serviceNowAddDeploymentTag: false
+serviceNowCommentField: work_notes
+serviceNowPostDeploymentComments: true
+useDeltaDeployment: false
+useDeltaDeploymentWithDependencies: false
+useSmartDeploymentTests: false
+allowedPromotionSteps:
+  - source: uat
+    target: preprod
